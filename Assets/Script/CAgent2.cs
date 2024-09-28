@@ -4,14 +4,14 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-public class CAgent : MonoBehaviour
+public class CAgent2 : MonoBehaviour
 {
     [SerializeField]
     Vector3 mTargetPosition = Vector3.zero;
 
     //속력
     float mSpeed = 1f;
-    
+
     //행동트리 최상단 루트노드
     Sequence mRootNode = null;
 
@@ -25,18 +25,13 @@ public class CAgent : MonoBehaviour
 
 
         //행동트리를 구축
-
-        //level3
-        ActionNode tANMove = new ActionNode(DoMove);
-        List<Node> tLevel_3 = new List<Node>();
-        tLevel_3.Add(tANMove);
-
         //level 2
-        Selector tSelectArrived = new Selector(tLevel_3);
-        ActionNode tANAttack = new ActionNode(DoAttack);
+        ActionNode tANMove = new ActionNode(DoMove);
+        
         List<Node> tLevel_2 = new List<Node>();
-        tLevel_2 .Add(tSelectArrived);
-        tLevel_2.Add(tANAttack);
+        tLevel_2.Add(tANMove);
+        
+
         //Level 1
         mRootNode = new Sequence(tLevel_2);
 
@@ -48,23 +43,21 @@ public class CAgent : MonoBehaviour
     {
         mRootNode.Evaluate();
     }
-    NodeStates DoAttack()
-    {
 
-        Debug.Log("<color='Blue'>DoAttack</color>");
 
-        return NodeStates.SUCCESS;
+    
 
-    }
+
+
     //실제 수행할 행동
     NodeStates DoMove()
     {
         Debug.Log("DoMove");
 
         //선형보간을 기반으로 이동하는 함수
-       this.transform.position =  Vector3.MoveTowards(this.transform.position, mTargetPosition, mSpeed * Time.deltaTime);
+        this.transform.position = Vector3.MoveTowards(this.transform.position, mTargetPosition, mSpeed * Time.deltaTime);
 
-        if(Vector3.Distance(this.transform.position,mTargetPosition) <=0.01f)
+        if (Vector3.Distance(this.transform.position, mTargetPosition) <= 0.01f)
         {
             Debug.Log("<color='red'>Move complite!!</color>");
 
@@ -74,10 +67,10 @@ public class CAgent : MonoBehaviour
         {
             return NodeStates.FAILURE;
         }
-        
+
     }
 
-     void DrawGizmo()
+    void DrawGizmo()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(mTargetPosition, Vector3.one * 0.5f);
